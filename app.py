@@ -1,4 +1,4 @@
-# app.py - Attractive Fake News Detection UI
+
 import streamlit as st
 import torch
 import re
@@ -7,14 +7,8 @@ from nltk.corpus import stopwords
 import nltk
 nltk.download('stopwords')
 
-# ---------------------------
-# Device
-# ---------------------------
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ---------------------------
-# Load trained model
-# ---------------------------
 model_path = r"C:\Users\Student\Documents\fakenewsprediction\data\fakenews_model.pkl"
 vocab_path = r"C:\Users\Student\Documents\fakenewsprediction\data\vocab.pkl"
 
@@ -24,9 +18,6 @@ with open(model_path, "rb") as f:
 with open(vocab_path, "rb") as f:
     vocab = pickle.load(f)
 
-# ---------------------------
-# Model architecture
-# ---------------------------
 class FakeNewsModel(torch.nn.Module):
     def __init__(self, vocab_size, embed_dim=128, hidden_dim=128):
         super().__init__()
@@ -53,9 +44,6 @@ model.eval()
 
 stop_words = set(stopwords.words("english"))
 
-# ---------------------------
-# Prediction function
-# ---------------------------
 def clean_text(text):
     text = str(text).lower()
     text = re.sub(r'[^a-zA-Z]', ' ', text)
@@ -76,9 +64,6 @@ def predict_news(model, vocab, text, max_len=100):
         _, predicted = torch.max(outputs, 1)
     return "Real" if predicted.item() == 1 else "Fake"
 
-# ---------------------------
-# Streamlit UI
-# ---------------------------
 st.set_page_config(
     page_title="📰 Fake News Detection",
     page_icon="🗞️",
@@ -88,10 +73,8 @@ st.set_page_config(
 st.markdown("<h1 style='text-align: center; color: #4B0082;'>📰 Fake News Detection</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #6A5ACD;'>Check if a news article is REAL or FAKE!</p>", unsafe_allow_html=True)
 
-# Input area
 news_input = st.text_area("Paste your news article here:", height=150, placeholder="Type or paste the news text...")
 
-# Example buttons
 st.markdown("### Try Example News Articles")
 col1, col2 = st.columns(2)
 with col1:
@@ -101,7 +84,6 @@ with col2:
     if st.button("⚠️ Fake Example"):
         news_input = "Scientists discovered that eating chocolate every day can make you live forever, study claims."
 
-# Predict button
 if st.button("Predict"):
     if news_input.strip() == "":
         st.warning("Please enter some text to predict!")
@@ -112,6 +94,6 @@ if st.button("Predict"):
         else:
             st.error("❌ This news is likely FAKE.")
 
-# Footer
 st.markdown("<hr style='border:1px solid #6A5ACD'>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray;'>Developed with ❤️ using Streamlit & PyTorch</p>", unsafe_allow_html=True)
+
